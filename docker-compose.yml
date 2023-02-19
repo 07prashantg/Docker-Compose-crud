@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: "crud_db"
+    platform: linux/x86_64
+    image: prashant1107/go_crud_db
+    networks:
+      - default
+    restart: always
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "crud_database"
+      MYSQL_USER: "crud_user"
+      MYSQL_PASSWORD: "password"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: mysqld --innodb_use_native_aio=0
+  api:
+    container_name: "crud_api"
+    image: prashant1107/crud_api
+    ports: 
+      - "8082:8082"
+    depends_on:
+      - db
+    volumes:
+      - .:/app/
+networks:
+  default:
+volumes:
+  mysql_data:
